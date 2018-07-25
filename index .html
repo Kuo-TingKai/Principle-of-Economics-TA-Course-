@@ -1,0 +1,221 @@
+<html>
+<head>
+	<title>Course Rating</title>
+	
+</head>
+<ul id="course"></ul>
+<ul id="critique"></ul>
+<p id="avgrating"></p>
+   <style type="text/css">
+   @charset "UTF-8";
+html, body {
+  font-family: "微軟正黑體";
+}
+
+.highlight {
+  background-color: #FFFFE0;
+  padding: 2px 5px;
+}
+
+ul#course {
+  display: flex;
+}
+ul#course li {
+  list-style: none;
+  padding: 10px;
+  cursor: pointer;
+}
+ul#course li:hover {
+  background-color: Azure;
+}
+
+ul#critique {
+  background-color: #eee;
+  padding: 10px;
+}
+ul#critique li {
+  background-color: #fff;
+  list-style: none;
+  display: inline-block;
+  padding: 20px 40px;
+  margin: 10px;
+  box-shadow: 0px 0px 20px rgba(0, 0, 0, 0.1);
+  border-radius: 10%;
+  transition: 0.5s;
+  position: relative;
+  overflow: hidden;
+}
+ul#critique li .hotComment {
+  background-color: LightCoral;
+  border-radius: 5%;
+  color: white;
+  position: absolute;
+  right: 0;
+  top: 0;
+  padding: 2px 20px;
+  transform: rotate(25deg) translate(25px, 8px);
+}
+ul#critique li:hover {
+  transform: translate(-10px, -10px);
+  cursor: pointer;
+}
+
+.student {
+  width: 50px;
+  height: 50px;
+  background-color: Salmon;
+  border-radius: 50%;
+}
+.student.Henry {
+  background-color: Khaki;
+}
+.student.Ho {
+  background-color: LightGreen;
+}
+
+p#avgrating:hover {
+  background-color: Azure;
+}
+
+</style>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
+	<script >console.clear();
+function sayhi(name) {
+  console.log("Hi, " + name + "!");
+}
+sayhi("Heisenberg");
+sayhi("Ising");
+
+function execute(func, str) {
+  return func(str);
+}
+var namelist = ["Schrodinger", "Dirac"];
+var greet1 = execute(sayhi, namelist[0]);
+var greet2 = execute(sayhi, namelist[1]);
+
+var coursedata = [
+  {
+    name: "Quantum Mechanics",
+    credits: 3,
+    teacher: "YC Lin",
+    prerequisition: ["Differential Equation", "Linear Algebra"],
+    description:
+      "Quantum mechanics is the foundation of every science and engineering field. This course will teach some crucial concept, such like: wave function, probability and superposition, Dirac representation,Schrodinger equation, quantum entanglement and tensor product, Hilbert space,the trace of a matrix and Von Neumann entropy, etc. In the end of this course, I will introduce some of simulation algorithm for solving quantum many body problem. "
+  },
+  {
+    name: "Macroeconomic Theory",
+    credits: 3,
+    teacher: "Jeff Lee",
+    prerequisition: ["Real Analysis", "Linear Algebra"],
+    description:
+      "This course involve the frontier study about real business cycle theory, some numerical method to solve a dynamic system and teach you how to start a economic analysis from the microfoundation and construct a macroeconomic model."
+  },
+  {
+    name: "Financial Time Series",
+    credits: 3,
+    teacher: "Shu Shun Xu",
+    prerequisition: ["R", "Linear Algebra"],
+    description:
+      "This course involves: multiple regresion, ARMA, VAR, GARCH. The final project among this semester is to porvide a opportunity that encourage stutent doing a step-by-step time series analysis with R programming."
+  }
+];
+
+function highlight(paragraph, keyword) {
+  var replaceregex = new RegExp("(" + keyword + ")");
+  // return paragraph.replace(/(Quantum mechanics)/g,"<span class = 'highlight'>$1</span>").replace(/(microfoundation)/g,"<span class = 'highlight'>$1</span>").replace(/(microfoundation)/g,"<span class = 'highlight'>$1</span>").replace(/( R )/g,"<span class = 'highlight'>$1</span>")
+  return paragraph.replace(replaceregex, "<span class = 'highlight'>$1</span>");
+} //$1: Analysis
+
+function showcourse(course) {
+  // $("ul#course").append(" <li>"+course.name+"</li>")
+  item = $("<li>");
+  // var highlighttext = highlight(course.description.slice(0,200))
+  var highlighttext = highlight(
+    course.description.slice(0, 200),
+    "Quantum mechanics"
+  );
+  item.append("<h2>" + course.name + "</h2>");
+  item.append("<h3>Teacher: " + course.teacher + "</h3>");
+  item.append("<h4>Credits: " + course.credits + "</h4>");
+  item.append(
+    "<p>Prerequisite course:  " + course.prerequisition.join(", ") + "</p>"
+  );
+  item.append("<p>description:  " + highlighttext + "...</p>");
+  $("ul#course").append(item);
+}
+
+for (var i = 0; i < coursedata.length; i++) {
+  // var course = coursedata[i]
+  // $("ul#course").append("<li>"+course.name+"</li>")
+  showcourse(coursedata[i]);
+}
+
+function generateCritique(name, date, rating, critique, hot) {
+  return {
+    name: name,
+    date: date,
+    rating: rating,
+    critique: critique,
+    hot: hot
+  };
+}
+
+var critiquedata = [
+  generateCritique(
+    "Kevin",
+    "2018/07/23",
+    "*****",
+    "I have learned many <br>interesting and useful things!",
+    1
+  ),
+  generateCritique("Henry", "2018/07/23", "****", "Me too.", 0),
+  generateCritique("Ho", "2018/07/23", "****", "Same has I.", 0)
+];
+
+function getItemHtml(result) {
+  var item = $("<li>");
+  var grade = "";
+  if (result.name == "Kevin") {
+    grade = "(1st-yr)";
+  } else {
+    grade = "(2nd-yr)";
+  }
+  if (result.hot == 1) {
+    hotComment = "<div class = 'hotComment'>Hot Comment!</div>";
+    item.append(hotComment);
+  }
+  var critiqueHtml = "<div class = 'student " + result.name + "'></div>";
+  item.append("<h3>" + result.name + grade + "</h3>");
+  item.append(critiqueHtml);
+  item.append("<h5>(no photo)</h5>");
+  item.append("<h4>" + result.date + "</h4>");
+  item.append("<h4>" + result.rating + " stars</h4>");
+  item.append("<p>" + result.critique + "</p>");
+
+  return item;
+}
+
+function printItems(items) {
+  for (var i = 0; i < items.length; i++) {
+    var itemHtml = getItemHtml(items[i]);
+    $("ul#critique").append(itemHtml);
+  }
+}
+
+printItems(critiquedata);
+
+function avgrating(items) {
+  var total = 0;
+  for (var i = 0; i < items.length; i++) {
+    total += items[i].rating.length;
+  }
+  total /= items.length;
+  return Math.round(total * 100) / 100;
+}
+
+$("p#avgrating").append(
+  "<center>Average rating:<br> " + avgrating(critiquedata) + " stars.</center>"
+);
+</script>
+
+</html>
